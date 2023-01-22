@@ -1,6 +1,6 @@
 from flask import Flask
-
 from config import Config
+from flask_sqlalchemy import SQLAlchemy
 
 def create_app(config_class=Config):
 
@@ -8,9 +8,13 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
-    # Initialize Flask extensions here
+    # Initialize database
+    db = SQLAlchemy()
+    db.init_app(app)
 
     # Register blueprints here
+    from webapp.auth import auth as auth
+    app.register_blueprint(auth)
 
     @app.route('/test/')
     def test_page():
