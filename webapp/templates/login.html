@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Login</h1>
+<form>
+    <!-- <fieldset>
+      <legend>Legend</legend> -->
+      <div class="form-group">
+        <label class="form-label mt-4">Username</label>
+        <input type="username" class="form-control" id="usernameInput" placeholder="Username">
+      </div>
+      <div class="form-group">
+        <label class="form-label mt-4">Password</label>
+        <input type="password" class="form-control" id="passwordInput" placeholder="Password">
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    <!-- </fieldset> -->
+  </form>
+{% endblock %}
