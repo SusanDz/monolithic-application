@@ -21,6 +21,9 @@ def create_app(config_class=Config):
     from webapp.product_page import product_page as product
     app.register_blueprint(product)
 
+    from webapp.order_page import order_page as order
+    app.register_blueprint(order)
+
     # from .models import User
 
     # with app.app_context():
