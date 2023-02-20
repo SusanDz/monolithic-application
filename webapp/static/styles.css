@@ -1,4 +1,4 @@
-.container {
+.product-container {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -7,11 +7,19 @@
 .card {
     height: 350px;
     width: 300px;
-    margin: 10px
+    margin: 10px;
+}
+
+.order-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 
 .has-table {
+    display: flex;
     justify-content: center;
+    margin: 10px;
 }
 
 .table {
