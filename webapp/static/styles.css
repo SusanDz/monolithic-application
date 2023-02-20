@@ -3,8 +3,17 @@
     flex-direction: row;
     flex-wrap: wrap;
 }
+
 .card {
     height: 350px;
     width: 300px;
     margin: 10px
+}
+
+.has-table {
+    justify-content: center;
+}
+
+.table {
+    width: 600px;
 }
