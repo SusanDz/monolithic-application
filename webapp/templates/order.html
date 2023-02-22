@@ -4,7 +4,8 @@
 {% block content %}
 <div class="order-container">
     <div class="has-table">
-        <table class="table table-hover">
+        {% if data |length != 0 %}
+        <table id="order-table" class="table table-hover">
             <thead>
             <tr>
                 <th scope="col">Product Name</th>
@@ -12,6 +13,13 @@
             </tr>
             </thead>
             <tbody>
+                {% for item in data %}
+                    <tr class="table-secondary">
+                        <th scope="row">{{ item['name'] }}</th>
+                        <td>AED {{ item['price'] }}</td>
+                    </tr>
+                {% endfor %}
+
             <tr class="table-secondary">
                 <th scope="row">Bread</th>
                 <td>AED 15</td>
@@ -30,13 +38,33 @@
             </tr>
             </tbody>
         </table>
+        {% else %}
+        <div id="empty-card" class="card" style="display:none; width: 450px; border: 0; box-shadow:none">
+            <div class="card-body">
+              <h3 class="card-title">Your Shopping Cart is empty.</h3>
+            </div>
+        </div>
+        {% endif %}
     </div>
     <div class="card bg-secondary mb-3" style="max-width: 20rem; height: 160px">
         <div class="card-header">Subtotal (2 items):</div>
         <div class="card-body">
         <h4 class="card-title">AED 52</h4>
         </div>
-        <button type="button" class="btn btn-primary">Checkout</button>
+        <form action="" method="POST">
+            <button id="checkout-btn" type="submit" class="btn btn-primary" styles="width: 100%">Checkout</button>
+        </form>
+        <!-- <button id="checkout-btn" type="button" class="btn btn-primary">Checkout</button> -->
     </div>
 </div>
+<script>
+    // const button = document.getElementById('checkout-btn');
+    // const table = document.getElementById('order-table');
+    // const card = document.getElementById('empty-card');
+
+    // button.addEventListener('click', () => {
+    //     table.style.display = 'none'; // hide the table
+    //     card.style.display = 'block'; // display card
+    // });    
+</script>
 {% endblock %}
