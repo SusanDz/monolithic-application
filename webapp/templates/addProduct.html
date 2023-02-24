@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block heading %}Add a Product{% endblock %}
+{% block content %}
+<div class="add-product-container border border-primary rounded">
+    <form method="POST">
+        <div class="form-group">
+            <label class="form-label mt-4" for="productName">Product Name</label>
+            <input type="text" class="form-control" id="productNameInput" name="productName" placeholder="Product Name">
+        </div>
+        <div class="form-group">
+            <div class="input-group mb-3">
+                <span class="input-group-text">AED</span>
+                <input type="text" class="form-control" aria-label="Amount (to the nearest dirham)" style="padding: 1.2rem 1rem">
+                <span class="input-group-text">.00</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="picFile" class="form-label mt-4">Default file input example</label>
+            <input class="form-control" type="file" id="picFile">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+{% endblock %}
