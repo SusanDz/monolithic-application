@@ -33,7 +33,7 @@ def login():
             # MIGHT REMOVE THIS CONDITION
             flash('Credentials entered is incorrect. Create an account instead!', category='error')
     
-    return render_template('login.html', navOptions= {'/order': 'Order Page', 'product_page.addProduct': 'Add Products'})
+    return render_template('login.html', navOptions= {'/register': 'Register'})
 
 @auth.route('/register')
 def signup():
@@ -64,7 +64,7 @@ def signup():
             # redirect to function home of the route '/home'
             return redirect(url_for('profile.home'))
 
-    return render_template('register.html')
+    return render_template('register.html', navOptions= {'/login': 'Login'})
 
 @auth.route('/logout')
 def logout():
