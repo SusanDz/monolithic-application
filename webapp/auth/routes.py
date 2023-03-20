@@ -32,8 +32,8 @@ def login():
         else:
             # MIGHT REMOVE THIS CONDITION
             flash('Credentials entered is incorrect. Create an account instead!', category='error')
-
-    return render_template('login.html')
+    
+    return render_template('login.html', navOptions= {'/order': 'Order Page', 'product_page.addProduct': 'Add Products'})
 
 @auth.route('/register')
 def signup():
