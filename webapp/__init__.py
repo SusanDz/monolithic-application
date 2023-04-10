@@ -1,8 +1,8 @@
 from flask import Flask
 from config import Config
-from flask_sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy()
+import pymongo
+mongo = pymongo.MongoClient("mongodb+srv://dev:root@cluster0.x52x0kh.mongodb.net/?retryWrites=true&w=majority")
+db = mongo.get_database("Product")
 
 def create_app(config_class=Config):
 
@@ -11,8 +11,8 @@ def create_app(config_class=Config):
     app.config.from_object(config_class)
 
     # Initialize database
-    db = SQLAlchemy()
-    db.init_app(app)
+    # mongo.init_app(app)
+    print(db.products.count_documents({}))
 
     # Register blueprints here
     from webapp.auth import auth as auth
