@@ -9,4 +9,4 @@ def order():
     else:
         #get data from send as variable key value pair
         data = [{'_id': 1, 'name': 'Banana', 'price': 15}, {'_id': 2, 'name': 'Pie', 'price': 15}]
-    return render_template('order.html', data=data)
+    return render_template('order.html', data=data, navOptions= {'/products': 'Products'})
