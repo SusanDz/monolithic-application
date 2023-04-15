@@ -68,3 +68,26 @@ def signup():
             # flash('Registered succesfully!', category='success')
 
     return render_template('register.html', navOptions= {'/login': 'Login'})
+
+@auth.route('/logout')
+def logout():
+    #log out the user 
+    logout_user()
+    return redirect(url_for('login'))
+
+# Define a decorator function that checks the user's role
+def role_required(allowed_roles):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            if session.get("role") not in allowed_roles:
+                return redirect(url_for("auth.logout"))
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+
+@login_required
+@auth.route("/loggedin")
+@role_required(["user", "productOwner", "admin"])
+def home_page():
+    return redirect(url_for("product_page.products"))
+# render_template("products.html", navOptions= {'/order': 'Shopping Cart'})
