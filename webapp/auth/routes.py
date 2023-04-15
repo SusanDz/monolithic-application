@@ -1,36 +1,37 @@
-from flask import render_template, request, flash, redirect, url_for
+from flask import render_template, request, session, flash, redirect, url_for
+from webapp import db
+# , login_manager
 from ..models import User
-from werkzeug.security import check_password_hash
 from webapp.auth import auth
-from flask_login import login_user
+from flask_login import login_user, logout_user, login_required
+# from flask_user import roles_required, login_required
+# from .. import db
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         # get username and password from form
-        username = request.form.get('username')
-        password = request.form.get('password')
-
-        print(username)
+        uname = request.form.get('username')
+        passw = request.form.get('password')
+        print(request.form.get('username'))
 
         # user is returned then the user with given username exists
-        user = User.query.filter_by(username=username).first()
+        user = db.users.find_one({"username": uname, "password": passw})
+        print(user)
+        # user = db.Product.users.find_one({"username": request.form.get('uname'), "password":  request.form.get('passw')})
+        # user  = User(username=uname, password=passw)
 
         if user:
-            # for particular user check if the password provided matches with user in database
-            if check_password_hash(user.password, password):
-                flash('Logged in successfully!', category='success')
+            # session["username"] = user["username"]
+            # session["role"] = user["role"]
 
-                # User is logged in, remember user even after session expires
-                login_user(user, remember=True)
+            # User is logged in, sture user details in session and remember user even after session expires
+            login_user(User(user), remember=True)
 
-                # redirect to function home of the route '/home'
-                return redirect(url_for('profile.home'))
-            else:
-                # If username and password doesn't match flash message
-                flash('Username or Password entered is incorrect.', category='error')
+            # redirect to the product page
+            return redirect(url_for("auth.home_page"))
         else:
-            # MIGHT REMOVE THIS CONDITION
+            # If credentials is wrong flash a message
             flash('Credentials entered is incorrect. Create an account instead!', category='error')
     
     return render_template('login.html', navOptions= {'/register': 'Register'})
@@ -38,20 +39,16 @@ def login():
 @auth.route('/register')
 def signup():
     if request.method == 'POST':
-        # get username and password from form
+        # get username, email, password and role from form
         username = request.form.get('username')
-        email = request.form.get('email')
+        # email = request.form.get('email')
         password = request.form.get('password')
-        description = request.form.get('description')
+        role = request.form.get('role')
+
+        print(role)
 
         # user is returned then the user with given username exists
-        user = User.query.filter_by(username=username).first()
-
-        # if user - already exist
-        # password - not format
-        # username - not format
-        # if no user - register
-
+        user = db.users.find_one({"username": username})
 
         if user:
             # flash message for already exisiting username
@@ -59,13 +56,15 @@ def signup():
         elif(len(password)<8):
             flash('Length of the password needs to be greater than 8', category='error')
         elif(not(user)):
-            flash('Registered succesfully!', category='success')
+            # create a collection of the new user
+            db.users.insert_one({"username": username, "password": password, "role": role, "products": []})
 
-            # redirect to function home of the route '/home'
-            return redirect(url_for('profile.home'))
+            # User is registered, save user details in session and remember user after session expires
+            login_user(User(username, password, role, []), remember=True)
+
+            # redirect to the product page
+            return redirect(url_for("auth.home_page"))
+
+            # flash('Registered succesfully!', category='success')
 
     return render_template('register.html', navOptions= {'/login': 'Login'})
-
-@auth.route('/logout')
-def logout():
-    return 'Logout'
