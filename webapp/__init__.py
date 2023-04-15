@@ -1,8 +1,16 @@
 from flask import Flask
 from config import Config
+from flask_login import LoginManager
+from bson import ObjectId
 import pymongo
-mongo = pymongo.MongoClient("mongodb+srv://dev:root@cluster0.x52x0kh.mongodb.net/?retryWrites=true&w=majority")
-db = mongo.get_database("Product")
+# from mongoengine import connect
+
+# from flask_mongoengine import MongoEngine
+# db = MongoEngine(config=Config)
+
+# connect to mongo db --shift this later
+mongo = pymongo.MongoClient("mongodb+srv://dev:root@cluster0.x52x0kh.mongodb.net/?retryWrites=true&w=majority", connect=False)
+db = mongo.get_database("shopping_db")
 
 def create_app(config_class=Config):
 
@@ -11,8 +19,11 @@ def create_app(config_class=Config):
     app.config.from_object(config_class)
 
     # Initialize database
-    # mongo.init_app(app)
-    print(db.products.count_documents({}))
+    # mongoengine
+    # connect(host=app.config['MONGO_URI'])
+
+    # pymongo
+    print(db.products)
 
     # Register blueprints here
     from webapp.auth import auth as auth
@@ -24,18 +35,38 @@ def create_app(config_class=Config):
     from webapp.order_page import order_page as order
     app.register_blueprint(order)
 
-    # from .models import User
+    # Initialise login manager
+    login_manager = LoginManager()
+    login_manager.login_view = 'auth.login'
+    login_manager.init_app(app)
 
-    # with app.app_context():
-    #     db.create_all()
+    from .models import User
+
+    # Define user loader function
+    @login_manager.user_loader
+    def load_user(user_id):
+        user = db.users.find_one({'_id': ObjectId(user_id)})
+        print(user_id)
+        if not user:
+            return None
+        return User(user)
 
     @app.route('/test/')
     def test_page():
         return '<h1>Testing the Flask Application Factory Pattern</h1>'
 
     return app
-# from os import path
-# def create_database(app):
-#     if not path.exists('webapp/mono.db'):
-#         db.create_all(app=app)
-#         print('Created Database!')
+
+# login_manager = LoginManager()
+# login_manager.login_view = 'auth.login'
+# ap = create_app()
+# login_manager.init_app(ap)
+
+# from .models import User
+
+# @login_manager.user_loader
+# def load_user(username):
+#     u = db.users.find_one({"username": username})
+#     if not u:
+#         return "No user"
+#     return User(username=u["username"], password=u["password"], role=u["role"], products=u["products"])
