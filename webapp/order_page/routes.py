@@ -1,7 +1,9 @@
 from flask import render_template, request, flash, redirect, url_for
+from flask_login import login_required
 from webapp.order_page import order_page as order
 
 @order.route('/order', methods=['GET', 'POST'])
+@login_required
 def order():
     data = []
     if request.method == 'POST':
