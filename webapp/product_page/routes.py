@@ -1,8 +1,10 @@
 from flask import render_template, request, flash, redirect, url_for
+from flask_login import current_user, login_required
 from webapp.product_page import product_page as product
 from .. import db
 
 @product.route('/products', methods=['GET'])
+@login_required
 def products():
     #get products from db and send to html
     products = db.products.find()
@@ -11,10 +13,18 @@ def products():
     productls = []
     for product in products:
         productls.append({'name': product['name'], 'price': product['price'], 'img': product['picture']})
+
+    #depending on user role display fifferent navbar options
+    navBarOps = {}
+    if(current_user.role == 'user'):
+        navBarOps = {'/order': 'Shopping Cart'}
+    elif(current_user.role == 'productOwner'):
+        navBarOps = {'/addProduct': 'Add Products'}
     
-    return render_template('products.html', products = productls, navOptions= {'/order': 'Shopping Cart'})
+    return render_template('products.html', products = productls, navOptions= navBarOps)
 
 @product.route('/addProduct', methods=['GET', 'POST'])
+@login_required
 def addProduct():
     if request.method == 'POST':
         # get name and price and picture from form
