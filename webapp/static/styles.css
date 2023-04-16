@@ -4,6 +4,10 @@
     flex-wrap: wrap;
 }
 
+.add-product-container {
+    margin: 50px;
+}
+
 .card {
     height: 350px;
     width: 300px;
