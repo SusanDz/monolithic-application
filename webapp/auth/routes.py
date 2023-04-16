@@ -26,10 +26,10 @@ def login():
             # session["role"] = user["role"]
 
             # User is logged in, sture user details in session and remember user even after session expires
-            login_user(User(user), remember=True)
+            login_user(User(_id=user['_id'], username=user['username'], password=user['password'], role=user['role'], products=user['products']))
 
             # redirect to the product page
-            return redirect(url_for("auth.home_page"))
+            return redirect(url_for("product_page.products"))
         else:
             # If credentials is wrong flash a message
             flash('Credentials entered is incorrect. Create an account instead!', category='error')
@@ -56,14 +56,17 @@ def signup():
         elif(len(password)<8):
             flash('Length of the password needs to be greater than 8', category='error')
         elif(not(user)):
-            # create a collection of the new user
+            # create a new document of the new user
             db.users.insert_one({"username": username, "password": password, "role": role, "products": []})
 
+            # get user record id
+            id = getUserId(username)
+
             # User is registered, save user details in session and remember user after session expires
-            login_user(User(username, password, role, []), remember=True)
+            login_user(User(id, username, password, role, []))
 
             # redirect to the product page
-            return redirect(url_for("auth.home_page"))
+            return redirect(url_for("product_page.products"))
 
             # flash('Registered succesfully!', category='success')
 
@@ -85,9 +88,5 @@ def role_required(allowed_roles):
         return wrapper
     return decorator
 
-@login_required
-@auth.route("/loggedin")
-@role_required(["user", "productOwner", "admin"])
-def home_page():
-    return redirect(url_for("product_page.products"))
-# render_template("products.html", navOptions= {'/order': 'Shopping Cart'})
+def getUserId(username):
+    db.users.find_one({"username": username}, {"_id":1})
