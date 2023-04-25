@@ -53,7 +53,18 @@ def addProduct():
         # insert the product document to the database
         db.products.insert_one(product_doc)
 
+        # get id of product recently added
+        pid = getProductId(name, price)
+
+        # append product to user record
+        db.collection.update_one({'username': current_user.username}, {"$push": {'products': pid}})
+
         # send a flash message to screen with success message
         flash('Created product succesfully!', category='success')
         
     return render_template('addProduct.html', navOptions= {'/products': 'Products'})
+
+# get product id by searching for product by name and price
+def getProductId(name, price):
+    prod = db.users.find_one({"name": name, "price": price})
+    return prod['_id']
