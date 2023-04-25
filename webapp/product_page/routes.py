@@ -1,6 +1,7 @@
 from flask import render_template, request, flash, redirect, url_for
 from flask_login import current_user, login_required
 from webapp.product_page import product_page as product
+import base64
 from .. import db
 
 @product.route('/products', methods=['GET'])
@@ -29,15 +30,24 @@ def products():
 def addProduct():
     if request.method == 'POST':
         # get name and price and picture from form
-        name = request.form.get('name')
-        price = request.form.get('price')
-        picture = request.form.get('picture')
+        name = request.form.get('productName')
+        price = request.form.get('productPrice')
+        picture = request.files['productPic']
 
+        print(name, price, picture)
+
+         # convert the image to base64
+        if picture:
+            image_bytes = picture.read()
+            b64 = base64.b64encode(image_bytes).decode('utf-8')
+        else:
+            b64 = None
+        
         # create a new product document
         product_doc = {
             'name': name,
             'price': price,
-            'picture': picture
+            'picture': b64
         }
 
         # insert the product document to the database
