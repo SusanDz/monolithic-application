@@ -36,7 +36,7 @@ def login():
     
     return render_template('login.html', navOptions= {'/register': 'Register'})
 
-@auth.route('/register')
+@auth.route('/register', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
         # get username, email, password and role from form
@@ -89,4 +89,5 @@ def role_required(allowed_roles):
     return decorator
 
 def getUserId(username):
-    db.users.find_one({"username": username}, {"_id":1})
+    user = db.users.find_one({"username": username})
+    return user['_id']
