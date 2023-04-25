@@ -16,10 +16,11 @@ def products():
 
     #depending on user role display fifferent navbar options
     navBarOps = {}
-    if(current_user.role == 'user'):
+    if(current_user.role == 'Customer'):
         navBarOps = {'/order': 'Shopping Cart'}
-    elif(current_user.role == 'productOwner'):
+    elif(current_user.role == 'Product Owner'):
         navBarOps = {'/addProduct': 'Add Products'}
+    print(current_user.role)
     
     return render_template('products.html', products = productls, navOptions= navBarOps)
 
