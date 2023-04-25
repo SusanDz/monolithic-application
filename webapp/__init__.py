@@ -23,7 +23,7 @@ def create_app(config_class=Config):
     # connect(host=app.config['MONGO_URI'])
 
     # pymongo
-    print(db.products)
+    # print(db.products)
 
     # Register blueprints here
     from webapp.auth import auth as auth
@@ -49,7 +49,7 @@ def create_app(config_class=Config):
         print(user_id)
         if not user:
             return None
-        return User(user)
+        return User(_id=user['_id'], username=user['username'], password=user['password'], role=user['role'], products=user['products'])
 
     @app.route('/test/')
     def test_page():
