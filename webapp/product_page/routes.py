@@ -47,7 +47,7 @@ def addProduct():
         product_doc = {
             'name': name,
             'price': price,
-            'picture': b64
+            'picture': "data:image/jpeg;base64,"+b64
         }
 
         # insert the product document to the database
@@ -57,7 +57,7 @@ def addProduct():
         pid = getProductId(name, price)
 
         # append product to user record
-        db.collection.update_one({'username': current_user.username}, {"$push": {'products': pid}})
+        db.users.update_one({'username': current_user.username}, {"$push": {'products': pid}})
 
         # send a flash message to screen with success message
         flash('Created product succesfully!', category='success')
@@ -66,5 +66,5 @@ def addProduct():
 
 # get product id by searching for product by name and price
 def getProductId(name, price):
-    prod = db.users.find_one({"name": name, "price": price})
+    prod = db.products.find_one({"name": name, "price": price})
     return prod['_id']
