@@ -7,6 +7,7 @@ from flask_login import login_user, logout_user, login_required
 # from flask_user import roles_required, login_required
 # from .. import db
 
+@auth.route('/', methods=['GET', 'POST'])
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
