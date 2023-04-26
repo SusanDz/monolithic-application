@@ -76,7 +76,11 @@ def signup():
 def logout():
     #log out the user 
     logout_user()
-    return redirect(url_for('login'))
+
+    # flash success message
+    flash('Logged out successfully!')
+    
+    return redirect(url_for('auth.login'))
 
 # Define a decorator function that checks the user's role
 def role_required(allowed_roles):
