@@ -18,9 +18,9 @@ def products():
     #depending on user role display fifferent navbar options
     navBarOps = {}
     if(current_user.role == 'Customer'):
-        navBarOps = {'/order': 'Shopping Cart'}
+        navBarOps = {'/order': 'Shopping Cart', '/logout': 'Log Out'}
     elif(current_user.role == 'Product Owner'):
-        navBarOps = {'/addProduct': 'Add Products'}
+        navBarOps = {'/addProduct': 'Add Products', '/logout': 'Log Out'}
     print(current_user.role)
     
     return render_template('products.html', products = productls, navOptions= navBarOps)
@@ -62,7 +62,7 @@ def addProduct():
         # send a flash message to screen with success message
         flash('Created product succesfully!', category='success')
         
-    return render_template('addProduct.html', navOptions= {'/products': 'Products'})
+    return render_template('addProduct.html', navOptions= {'/products': 'Products', '/logout': 'Log Out'})
 
 # get product id by searching for product by name and price
 def getProductId(name, price):
