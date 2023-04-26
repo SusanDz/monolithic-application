@@ -11,9 +11,9 @@ def products():
     products = db.products.find()
 
     #get list of products from collection
-    productls = []
-    for product in products:
-        productls.append({'name': product['name'], 'price': product['price'], 'img': product['picture']})
+    productls = list(products)
+    # for product in products:
+    #     productls.append({'name': product['name'], 'price': product['price'], 'img': product['picture']})
 
     #depending on user role display fifferent navbar options
     navBarOps = {}
