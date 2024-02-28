@@ -7,6 +7,7 @@ from flask_login import login_user, logout_user, login_required
 # from flask_user import roles_required, login_required
 # from .. import db
 
+#login() is a View function that handles application routes for the URLs '/' and '/login'
 @auth.route('/', methods=['GET', 'POST'])
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
@@ -30,6 +31,7 @@ def login():
             login_user(User(_id=user['_id'], username=user['username'], password=user['password'], role=user['role'], products=user['products']))
 
             # redirect to the product page
+            # URL reversing function 'url_for'builds a URL to a specific function
             return redirect(url_for("product_page.products"))
         else:
             # If credentials is wrong flash a message

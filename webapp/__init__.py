@@ -2,25 +2,23 @@ from flask import Flask
 from config import Config
 from flask_login import LoginManager
 from bson import ObjectId
-import pymongo
+from pymongo import MongoClient # Database connector
+import os
 # from mongoengine import connect
 
 # from flask_mongoengine import MongoEngine
 # db = MongoEngine(config=Config)
 
-# connect to mongo db --shift this later
-mongo = pymongo.MongoClient("mongodb+srv://dev:root@cluster0.x52x0kh.mongodb.net/?retryWrites=true&w=majority", connect=False)
-db = mongo.get_database("shopping_db")
+# Initialise the database
+client = MongoClient(os.getenv('MONGO_DB_URI'))
+db = client.get_database("shopping_db")
 
 def create_app(config_class=Config):
 
     #Create flask application instance, __name__ var has the name of the current python module
+    #So that it can find resources like the template files
     app = Flask(__name__)
     app.config.from_object(config_class)
-
-    # Initialize database
-    # mongoengine
-    # connect(host=app.config['MONGO_URI'])
 
     # pymongo
     # print(db.products)
