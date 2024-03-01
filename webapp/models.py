@@ -2,12 +2,12 @@ from flask_login import UserMixin
 from webapp import db
 
 class User(UserMixin):
-    def __init__(self, _id, username, password, role, products):
+    def __init__(self, _id, username, password, role, orderedProducts):
         self._id = _id
         self.username = username
         self.password = password
         self.role = role
-        self.products = products
+        self.orderedProducts = orderedProducts
 
     @staticmethod
     def is_authenticated():

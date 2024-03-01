@@ -13,6 +13,8 @@ import os
 client = MongoClient(os.getenv('MONGO_DB_URI'))
 db = client.get_database("shopping_db")
 
+# Following application factory pattern - setup app in a function
+# This allows to create multiple instances of the same app for testing purposes
 def create_app(config_class=Config):
 
     #Create flask application instance, __name__ var has the name of the current python module
@@ -48,7 +50,7 @@ def create_app(config_class=Config):
         print(user_id)
         if not user:
             return None
-        return User(_id=user['_id'], username=user['username'], password=user['password'], role=user['role'], products=user['products'])
+        return User(_id=user['_id'], username=user['username'], password=user['password'], role=user['role'], orderedProducts=user['orderedProducts'])
 
     @app.route('/test/')
     def test_page():
