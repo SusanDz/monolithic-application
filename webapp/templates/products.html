@@ -3,7 +3,7 @@
 {% block content %}
 <div class="product-container">
 
-  <!-- for loop through list of products and create product cards with th eproduct info -->
+  <!-- for loop through list of products and create product cards with the product info -->
   {% for product in products %}
     <div class="card mb-3">
       <img src="{{ product.picture }}" class="card-img-top" alt="{{ product.name }}" class="d-block user-select-none" width="100%" height="200" aria-label="Placeholder: Image cap" focusable="false" role="img" preserveAspectRatio="xMidYMid slice" viewBox="0 0 318 180" style="font-size:1.125rem;text-anchor:middle">
@@ -13,7 +13,50 @@
           <h5 class="card-title">{{ product.name }}</h5>
           <p class="card-text">AED {{ product.price }}</p>
       </div>
-      <button type="button" class="btn btn-primary">Order</button>
+      <button type="button" id="my-button" class="btn btn-primary" product-id="{{ product._id }}" product-name="{{ product.name }}">Add to cart</button>
     </div>
   {% endfor %}
+
+</div>
+<script>
+  // Add a click event listener to every add to cart button
+  document.querySelectorAll('.btn-primary').forEach(button => {
+    button.addEventListener('click', function() {
+      console.log('Add to cart is clicked!')
+      let productId = this.getAttribute('product-id');
+      let productName = this.getAttribute('product-name');
+
+      // Send an AJAX request to the server
+      fetch('/addProductToCart', {
+          method: 'POST',
+          body: JSON.stringify({ id: productId, name: productName }),
+          headers: {
+              'Content-Type': 'application/json',
+          },
+      })
+      .then(response => response.json())
+      .then(result => {
+        ms = result.message
+        category = result.category
+        console.log(ms)
+        if(ms) {
+            // Create a new div element to submit a success or error message
+            var alertDiv = document.createElement("div");
+            alertDiv.className = "alert alert-"+ category +" alert-dismissible fade show";
+            alertDiv.setAttribute("role", "alert");
+            alertDiv.innerHTML = ms+' <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span></button>';
+
+            // Find the container div to insert the alert
+            var containerDiv = document.querySelector('.container');
+
+            // Insert the alert before the container
+            containerDiv.parentNode.insertBefore(alertDiv, containerDiv);
+         } 
+      })
+      .catch(error => {
+          console.error('Error:', error);
+      });
+    });
+  });
+</script>
 {% endblock %}
