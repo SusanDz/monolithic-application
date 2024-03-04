@@ -50,7 +50,7 @@ def create_app(config_class=Config):
         print(user_id)
         if not user:
             return None
-        return User(_id=user['_id'], username=user['username'], password=user['password'], role=user['role'], orderedProducts=user['orderedProducts'])
+        return User(_id=user['_id'], username=user['username'], password=user['password'], role=user['role'], products=user['products'])
 
     @app.route('/test/')
     def test_page():
