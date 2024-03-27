@@ -1,11 +1,11 @@
 from flask import render_template, request, session, flash, redirect, url_for
-from webapp import db
-# , login_manager
-from ..models import User
+from pydantic import ValidationError
+from ..models import mongo, User
 from webapp.auth import auth
-from flask_login import login_user, logout_user, login_required
-# from flask_user import roles_required, login_required
-# from .. import db
+from flask_login import login_user, logout_user
+import json
+
+db = mongo.db
 
 #login() is a View function that handles application routes for the URLs '/' and '/login'
 @auth.route('/', methods=['GET', 'POST'])
@@ -17,16 +17,23 @@ def login():
         passw = request.form.get('password')
         print(request.form.get('username'))
 
-        # user is returned then the user with given username exists
+        # convert application form data to json format
+        form_data = json.dumps(request.form.to_dict())
+        json_form = json.loads(form_data)
+
+        # Validate the data to set of constraints set
+        try:
+            User(**json_form)
+        except ValidationError as e:
+            error_messages = [f"{error['loc']}: {''.join(error['msg'])}" for error in e.errors()]
+            flash('Validation error: ' + ', '.join(error_messages), category='error')
+            return redirect(url_for('auth.login'))
+
+        # if user is returned then the user with given username exists
         user = db.users.find_one({"username": uname, "password": passw})
         print(user)
-        # user = db.Product.users.find_one({"username": request.form.get('uname'), "password":  request.form.get('passw')})
-        # user  = User(username=uname, password=passw)
 
         if user:
-            # session["username"] = user["username"]
-            # session["role"] = user["role"]
-
             # User is logged in, sture user details in session and remember user even after session expires
             login_user(User(_id=user['_id'], username=user['username'], password=user['password'], role=user['role'], products=user['products']))
 
@@ -50,7 +57,7 @@ def signup():
 
         print(role)
 
-        # user is returned then the user with given username exists
+        # Check if username already taken
         user = db.users.find_one({"username": username})
 
         if user:
