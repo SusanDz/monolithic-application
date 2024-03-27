@@ -3,15 +3,11 @@ from config import Config
 from flask_login import LoginManager
 from bson import ObjectId
 from pymongo import MongoClient # Database connector
-import os
-# from mongoengine import connect
-
-# from flask_mongoengine import MongoEngine
-# db = MongoEngine(config=Config)
+from .models import mongo
 
 # Initialise the database
-client = MongoClient(os.getenv('MONGO_DB_URI'))
-db = client.get_database("shopping_db")
+# client = MongoClient(os.getenv('MONGO_DB_URI'))
+# db = client.get_database("shopping_db")
 
 # Following application factory pattern - setup app in a function
 # This allows to create multiple instances of the same app for testing purposes
@@ -22,6 +18,7 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
+    mongo.init_app(app)
     # pymongo
     # print(db.products)
 
@@ -46,7 +43,7 @@ def create_app(config_class=Config):
     # Define user loader function
     @login_manager.user_loader
     def load_user(user_id):
-        user = db.users.find_one({'_id': ObjectId(user_id)})
+        user = mongo.db.users.find_one({'_id': ObjectId(user_id)})
         print(user_id)
         if not user:
             return None
